@@ -1,3 +1,5 @@
+//para ejecutar mysql
+require("./config/mysql");
 //libreria expres
 const express = require ("express")
 //permite comunicacion entre el front y back
