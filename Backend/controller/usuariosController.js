@@ -1,7 +1,8 @@
 //importamos la conexion aqui
 const conectarDb = require("../config/mysql")
-//nativo de node para generar codigo al azar
-const crypto = require("crypto")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 
 //metodo post
 async function Login(datos,respuesta) {
@@ -27,10 +28,22 @@ if(usuarios.length === 0){
 return respuesta.status(404).json({mensaje:"Usuario no existe"})
 }
 
+const user = usuarios[0];
+
 //validar contra
-if( usuarios[0].contraseña !== contraseña){
-return respuesta.status(401).json({mensaje:"Contraseña Incorrecta"})
-}
+
+    const valid = await bcrypt.compare(contraseña, user.contraseña);
+    if (!valid) return respuesta.status(401).send("Contraseña incorrecta");
+
+    const token = jwt.sign(
+      { id: user.id, usuario: user.usuario },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    respuesta.json({ token });
+  
+
 respuesta.status(200).json({mensaje:"Bienvenido"})
 }
 //para posibles errores
@@ -58,9 +71,18 @@ const {
 usuario,
 gmail,
 contraseña,
-rol,
-telefono
+telefono,
+nombre,
+apellido,
+matricula,
+dni,
+id_especialidad,
+id_usuario
 } = datos.body
+
+
+const hash = await bcrypt.hash(contraseña, 10);
+
 
 //validacion
 if(!usuario||!gmail||!contraseña){
@@ -81,15 +103,43 @@ if(usuarios1.length > 0 ){
 return respuesta.status(400).json({mensaje:"Nro existente ingresar otro"})
 }
 
-//insertamos datos
-const insertar = "INSERT INTO Usuarios (usuario, gmail, contraseña, rol, telefono) VALUES (?, ?, ?, ?, ?)"
-await conexion.query(insertar,[usuario, gmail, contraseña, rol, telefono])
-respuesta.status(201).json({mensaje:"Usuaario agregado"})
+// INSERT usuario
+const [resultInsert] = await conexion.query(
+  "INSERT INTO Usuarios (usuario, gmail, contraseña, telefono) VALUES (?, ?, ?, ?)",
+  [usuario, gmail, hash, telefono]
+);
+
+// VALIDACIÓN CRÍTICA
+if (!resultInsert.insertId) {
+  throw new Error("No se pudo obtener el ID del usuario");
+}
+
+const id_usuario_db = resultInsert.insertId;
+
+console.log("ID USUARIO:", id_usuario_db);
+
+// lógica
+if (matricula) {
+  await conexion.query(
+    "INSERT INTO medicos (id_usuario,nombre, apellido, matricula, dni, id_especialidad) VALUES (?, ?, ?, ?, ?, ?)",
+    [id_usuario_db, nombre, apellido, matricula, dni, id_especialidad]
+  );
+} else {
+  await conexion.query(
+    "INSERT INTO recepcionistas (nombre, apellido, dni, id_usuario) VALUES (?, ?, ?, ?)",
+    [nombre, apellido, dni, id_usuario_db]
+  );
+}
+respuesta.status(201).json({mensaje:"Usuario agregado"})
+
 }
 //posibles errores
 catch(error){
-console.log(error)
-respuesta.status(500).json({mensaje: "error al registrar"})
+ console.log("ERROR SQL:", error);
+ respuesta.status(500).json({ 
+   mensaje: "error al registrar",
+   error: error.message
+ });
 }
 //cierra la conexion
 finally{
@@ -98,6 +148,18 @@ if(conexion){
 }
 }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //para solicitar recuperacion
 async function SolicitarRecuperacion(datos,respuesta) {

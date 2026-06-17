@@ -7,7 +7,7 @@ try{
 const conexion = await db.createConnection({
 host : "localhost",
 user : "root",
-password : "15082005",
+password : "manca123",
 database : "Hospital"
 })
 console.log("Coneccion bien")
