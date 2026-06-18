@@ -1,0 +1,269 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+.hospital-background {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('./imagenes/Gemini_Generated_Image_kzmv3okzmv3okzmv.png'); 
+    background-size: cover; 
+    background-position: center bottom; 
+    background-attachment: fixed; 
+    position: relative;
+}
+
+.door-button-container {
+    position: absolute;
+    bottom: 10%; 
+    left: 50.1%;
+    transform: translateX(-50%);
+    
+    width: 316px; 
+    height: 190px; 
+    
+    perspective: 1000px; 
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #1a1a1a; 
+}
+
+.door {
+    position: absolute; 
+    width: 50%; 
+    height: 100%; 
+    top: 0; 
+    background-color: rgba(220, 240, 255, 0.85); 
+    border: 2px solid #020000; 
+    transition: transform 0.6s ease-in-out; 
+    z-index: 2;
+
+    background-image: url('./imagenes/Modern-automatic-sliding-glass-entrance-door.jpg'); 
+    background-repeat: no-repeat; 
+    background-position: center; 
+    background-size: 100% 100%; /* Ajusta el tamaño aquí */
+}
+
+.door-left {
+    left: 0;
+    transform-origin: left center;
+}
+
+.door-right {
+    right: 0;
+    transform-origin: right center;
+}
+
+.login-text {
+    position: absolute;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 10;
+    text-shadow: 2px 2px 5px rgba(0,0,0,1);
+}
+
+.door-button-container:hover .door-left {
+    transform: rotateY(90deg); 
+}
+
+.door-button-container:hover .door-right {
+    transform: rotateY(-90deg); 
+}
+
+.door-button-container:hover .login-text {
+    opacity: 1;
+}
+
+/*LGIN */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); 
+    
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 380px;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    position: relative;
+   
+    transform: translateY(-30px);
+    transition: transform 0.4s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #ff4d4d;
+}
+
+
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hospital-logo { 
+    font-size: 2.5rem; 
+    margin-bottom: 5px; 
+}
+
+.login-header h2 { 
+    margin: 0; 
+    color: #333; 
+    font-size: 1.6rem; 
+}
+
+.login-header p { 
+    margin: 5px 0 0 0; 
+    color: #777; 
+    font-size: 0.85rem; 
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: -5px;
+}
+
+.role-selection {
+    display: flex;
+    gap: 12px;
+}
+
+.role-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.role-option input[type="radio"] {
+    display: none;
+}
+
+.role-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    transition: all 0.25s ease;
+}
+
+.role-icon { 
+    font-size: 1.6rem; 
+    margin-bottom: 4px; 
+}
+
+.role-name { 
+    font-size: 0.85rem; 
+    font-weight: bold; 
+    color: #64748b; 
+}
+
+.role-option input[type="radio"]:checked + .role-card {
+    border-color: #0284c7; 
+    background-color: #f0f9ff;
+}
+
+.role-option input[type="radio"]:checked + .role-card .role-name {
+    color: #0284c7;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.input-group input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #0284c7;
+}
+
+.submit-button {
+    background-color: #0284c7;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #0369a1;
+}
